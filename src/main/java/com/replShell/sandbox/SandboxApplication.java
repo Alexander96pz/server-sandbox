@@ -8,6 +8,7 @@ public class SandboxApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(SandboxApplication.class, args);
+
 	}
 
 }

@@ -1,7 +1,9 @@
 package com.replShell.sandbox.model;
 
+import jdk.jshell.JShell;
+
 public class Repl {
-    private  int id;
+    private int id;
     private String code;
 
     public Repl(int id, String code) {
@@ -24,4 +26,5 @@ public class Repl {
     public void setCode(String code) {
         this.code = code;
     }
+
 }
