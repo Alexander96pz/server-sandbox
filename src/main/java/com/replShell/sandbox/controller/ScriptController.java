@@ -17,7 +17,7 @@ public class ScriptController {
     private IcodeAnalisis code;
 
     @PostMapping
-    public Stream <Response> analizarScript(@RequestBody Repl repl) {
-        return code.onCommandEntered(repl.getCode());
+    public Response analizarScript(@RequestBody Repl repl) {
+        return code.onCommandEntered(repl.getCode(),repl.getId());
     }
 }

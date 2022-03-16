@@ -1,7 +1,5 @@
 package com.replShell.sandbox.model;
 
-import jdk.jshell.JShell;
-
 public class Repl {
     private int id;
     private String code;

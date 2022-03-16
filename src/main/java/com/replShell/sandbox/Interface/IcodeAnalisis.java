@@ -5,6 +5,6 @@ import com.replShell.sandbox.model.Response;
 import java.util.stream.Stream;
 
 public interface IcodeAnalisis {
-    Stream<Response> onCommandEntered(String command);
+    Response onCommandEntered(String command,int id);
 
 }

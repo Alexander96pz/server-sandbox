@@ -9,6 +9,7 @@ public class Response {
     private String value;
     private String exception;
     private String typeSnippet;
+    private String subtypeSnippet;
     public Response(){}
 
     public Response(String source, String status, String value){
@@ -78,5 +79,17 @@ public class Response {
 
     public void setTypeSnippet(String typeSnippet) {
         this.typeSnippet = typeSnippet;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public String getSubtypeSnippet() {
+        return subtypeSnippet;
+    }
+
+    public void setSubtypeSnippet(String subtypeSnippet) {
+        this.subtypeSnippet = subtypeSnippet;
     }
 }

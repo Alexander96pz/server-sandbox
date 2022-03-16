@@ -5,6 +5,7 @@ import jdk.jshell.JShellException;
 import jdk.jshell.Snippet;
 import jdk.jshell.Snippet.Status;
 import jdk.jshell.SnippetEvent;
+import jdk.jshell.SourceCodeAnalysis;
 
 import java.nio.charset.StandardCharsets;
 
@@ -12,15 +13,14 @@ import java.nio.charset.StandardCharsets;
 public class SnippetResolver {
 
     public Response resolve(SnippetEvent snippet) {
-        Snippet.Kind k= snippet.snippet().kind();
-        System.out.println(k.toString());
         Response obj_repl=new Response();
         boolean isValidSnippet = snippet.value() != null && snippet.status() == Status.VALID;
         if(isValidSnippet) {
             obj_repl.setSource(snippet.snippet().source());
             obj_repl.setStatus(snippet.status());
             obj_repl.setValue(snippet.value());
-            obj_repl.setTypeSnippet(k.name());
+            obj_repl.setTypeSnippet(snippet.snippet().kind().name());
+            obj_repl.setSubtypeSnippet(snippet.snippet().subKind().name());
             return obj_repl;
         }
         boolean snippetThrownException = snippet.exception() != null;
@@ -31,7 +31,8 @@ public class SnippetResolver {
         obj_repl.setSource(snippet.snippet().source());
         obj_repl.setStatus(snippet.status());
         obj_repl.setValue(snippet.value());
-        obj_repl.setTypeSnippet(k.name());
+        obj_repl.setTypeSnippet(snippet.snippet().kind().name());
+        obj_repl.setSubtypeSnippet(snippet.snippet().subKind().name());
         return obj_repl;
     }
 }
