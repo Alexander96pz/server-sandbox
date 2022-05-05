@@ -3,11 +3,11 @@ package com.replShell.sandbox.service;
 import com.replShell.sandbox.model.Response;
 import jdk.jshell.SnippetEvent;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
 
-import jdk.jshell.JShell;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import jdk.jshell.VarSnippet;
 
 public class AnalisisStatic {
@@ -34,9 +34,9 @@ public class AnalisisStatic {
             case 4:
 //                caso 5:
                 return AnalisisCode5(list,listV,command);
-//            case 5:
-////                caso 6:
-//                return AnalisisCode6(list,listV,command);
+            case 5:
+//                caso 6:
+                return AnalisisCode6(list,listV,command);
             default:
                 throw new IllegalStateException("Analisis de Codigo no existente: " + idcode);
         }
@@ -47,14 +47,16 @@ public class AnalisisStatic {
                 if (snippet.status().name() == "VALID"){
                     if( snippet.snippet().kind().name()=="STATEMENT"){
                         if(list.size()==1) {
-                            if (snippet.snippet().source().contains("System.out.print") && snippet.snippet().source().contains("\"Hello World\"")) {
+                            Pattern pat = Pattern.compile("^\\s*(System.out.println)\\s*\\(\\s*(\"Hello World\")\\s*\\)\\s*\\;?$");
+                            Matcher mat = pat.matcher(snippet.snippet().source());
+                            if (mat.matches()) {
                                 obj_resp.setSource(snippet.snippet().source());
                                 obj_resp.setStatus("VALID");
                                 obj_resp.setValue(snippet.value());
                                 obj_resp.setTypeSnippet(snippet.snippet().kind().name());
                                 obj_resp.setSubtypeSnippet(snippet.snippet().subKind().name());
                                 return obj_resp;
-                            }else{
+                            } else{
                                 return Reject(obj_resp,snippet);
                             }
                         }else{
@@ -74,9 +76,10 @@ public class AnalisisStatic {
         if(listV.size()==1){
             for (VarSnippet vs:listV){
                 if ("VAR".equals(vs.kind().name()) && "String".equals(vs.typeName())){
-//                    nameVariable=vs.name();
                     for (SnippetEvent snippet : list) {
-                        if(snippet.status().name().equals("VALID") && snippet.snippet().source().contains("System.out.println") && snippet.snippet().source().contains(vs.name())){
+                        Pattern pat = Pattern.compile("^\\s*(System.out.println)\\s*\\(\\s*"+vs.name()+"\\s*\\)\\s*\\;?$");
+                        Matcher mat = pat.matcher(snippet.snippet().source());
+                        if(mat.matches()){
                             obj_resp.setSource(command);
                             obj_resp.setStatus("VALID");
                             obj_resp.setValue(snippet.value());
@@ -92,7 +95,6 @@ public class AnalisisStatic {
                 }
             }
         }
-//        boolean S = listV.stream().filter(x-> "name")
         return Reject2(obj_resp);
     }
     public Response AnalisisCode4(List<SnippetEvent> list,List<VarSnippet> listV,String command){
@@ -101,7 +103,9 @@ public class AnalisisStatic {
             for (VarSnippet vs:listV){
                 if ("VAR".equals(vs.kind().name()) && "int".equals(vs.typeName())){
                     for (SnippetEvent snippet : list) {
-                        if(snippet.status().name().equals("VALID") && snippet.snippet().source().contains("System.out.println") && snippet.snippet().source().contains(vs.name())){
+                        Pattern pat = Pattern.compile("^\\s*(System.out.println)\\s*\\(\\s*"+vs.name()+"\\s*\\)\\s*\\;?$");
+                        Matcher mat = pat.matcher(snippet.snippet().source());
+                        if(mat.matches()){
                             obj_resp.setSource(command);
                             obj_resp.setStatus("VALID");
                             obj_resp.setValue(snippet.value());
@@ -122,7 +126,6 @@ public class AnalisisStatic {
 
     }
     public Response AnalisisCode5(List<SnippetEvent> list,List<VarSnippet> listV,String command){
-        int cont=0;
         Response obj_resp = new Response();
         boolean valid=false;
         for (SnippetEvent snippet : list) {
@@ -134,76 +137,109 @@ public class AnalisisStatic {
         }
         if(valid){
             if(listV.size()==2){
+//                int cont=0;
                 for (VarSnippet vs:listV){
                     if ("VAR".equals(vs.kind().name()) && "int".equals(vs.typeName())){
-                        cont++;
-                        if (cont==2){
-                            int suma=0;
-                            boolean valid1 =false;
-                            boolean valid2 =false;
-                            for (SnippetEvent snippet : list) {
-                                if(snippet.snippet().source().contains("System.out.println")){
-                                    valid2=true;
-                                }
-                                if(snippet.value()==""){
-                                    continue;
-                                } else {
-                                    suma=suma+Integer.parseInt(snippet.value()) ;
-                                }
-                            }
-                            if(suma == 15){
-                                valid1=true;
-                            }else {
-                                Reject2(obj_resp);
-                            }
-                            if(valid1 && valid2){
-                                obj_resp.setSource(command);
-                                obj_resp.setStatus("VALID");
-                                obj_resp.setValue(null);
-                                obj_resp.setTypeSnippet(null);
-                                obj_resp.setSubtypeSnippet(null);
-                                return obj_resp;
-                            }else{
-                                Reject2(obj_resp);
-                            }
-                        }
+                        continue;
                     }else{
                         return Reject2(obj_resp);
                     }
                 }
+
+                    int suma=0;
+                    boolean valid1 =false;
+                    boolean valid2 =false;
+                    for (SnippetEvent snippet : list) {
+                        Pattern pat = Pattern.compile("^\\s*(System.out.println)\\s*\\(\\s*[xy]\\s*\\+\\s*[yx]\\s*\\)\\s*\\;?$");
+                        Matcher mat = pat.matcher(snippet.snippet().source());
+                        if(mat.matches() && snippet.snippet().source().contains("x") && snippet.snippet().source().contains("y")){
+                            System.out.println(snippet.snippet().source());
+                            System.out.println(snippet.snippet().source().contains("y"));
+                            System.out.println(snippet.snippet().source().contains("x"));
+                            System.out.println(mat.matches());
+                            valid2=true;
+                        } else  if(snippet.value()==""){
+                            continue;
+                        } else {
+                            suma=suma+Integer.parseInt(snippet.value()) ;
+                        }
+                    }
+                    if(suma == 15){
+                        valid1=true;
+                    }else {
+                        Reject2(obj_resp);
+                    }
+                    if(valid1 && valid2){
+                        obj_resp.setSource(command);
+                        obj_resp.setStatus("VALID");
+                        obj_resp.setValue(null);
+                        obj_resp.setTypeSnippet(null);
+                        obj_resp.setSubtypeSnippet(null);
+                        return obj_resp;
+                    }else{
+                        Reject2(obj_resp);
+                    }
+
             } else {
                 return Reject2(obj_resp);
             }
         }
         return Reject2(obj_resp);
     }
-//    public Response AnalisisCode5(List<SnippetEvent> list,List<VarSnippet> listV,String command){
-//        Response obj_resp = new Response();
-//        boolean validatorVariables=false;
-//        String nameVariable=null;
-//        if(listV.size()==1){
-//            for (VarSnippet vs:listV){
-//                if ("VAR".equals(vs.kind().name()) && "String".equals(vs.typeName())){
-//                    validatorVariables=true;
-//                    nameVariable=vs.name();
-//                }
-//            }
-//        }
-//        for (SnippetEvent snippet : list) {
-//            if(snippet.status().name().equals("VALID") && snippet.snippet().source().contains("System.out.print") && snippet.snippet().source().contains(nameVariable) && validatorVariables == true){
-//                obj_resp.setSource(command);
-//                obj_resp.setStatus("VALID");
-//                obj_resp.setValue(snippet.value());
-//                obj_resp.setTypeSnippet(snippet.snippet().kind().name());
-//                obj_resp.setSubtypeSnippet(snippet.snippet().subKind().name());
-//                return obj_resp;
-//            }else if(snippet.status().name().equals("REJECTED")){
-//                return Reject(obj_resp,snippet);
-//            }
-//        }
-////        boolean S = listV.stream().filter(x-> "name")
-//        return obj_resp;
-//    }
+//    case 6
+    public Response AnalisisCode6(List<SnippetEvent> list,List<VarSnippet> listV,String command){
+        Response obj_resp = new Response();
+        boolean valid=false;
+        for (SnippetEvent snippet : list) {
+            if(snippet.status().name().equals("VALID")){
+                valid=true;
+            }else{
+                return Reject2(obj_resp);
+            }
+        }
+        if(valid){
+            if(listV.size() == 3){
+                for(VarSnippet var:listV){
+                    if ( var.name().equals("x")){
+                        continue;
+                    }else if(var.name().equals("y")){
+                        continue;
+                    } else if (var.name().equals("z")) {
+                        if(var.source().contains("=") && var.source().contains("x") && var.source().contains("+") && var.source().contains("y")){
+                            continue;
+                        }else{
+                            return Reject2(obj_resp);
+                        }
+                    }else {
+                        return Reject2(obj_resp);
+                    }
+                }
+                valid=false;
+                for (SnippetEvent snippet : list) {
+//                    Patron para la impresion
+                    Pattern pat = Pattern.compile("^\\s*(System.out.println)\\s*\\(\\s*z\\s*\\)\\s*\\;?$");
+                    Matcher mat = pat.matcher(snippet.snippet().source());
+                    if (mat.matches()) {
+                        valid=true;
+                    }
+                }
+                if (valid){
+                    obj_resp.setSource(command);
+                    obj_resp.setStatus("VALID");
+                    obj_resp.setValue(null);
+                    obj_resp.setTypeSnippet(null);
+                    obj_resp.setSubtypeSnippet(null);
+                    return obj_resp;
+                }
+                return Reject2(obj_resp);
+            }else{
+                Reject2(obj_resp);
+            }
+        }else {
+            Reject2(obj_resp);
+        }
+        return Reject2(obj_resp);
+    }
     public Response Reject(Response obj_resp,SnippetEvent snippet){
         obj_resp.setSource(snippet.snippet().source());
         obj_resp.setStatus("REJECTED");
