@@ -47,7 +47,7 @@ public class AnalisisStatic {
                 if (snippet.status().name() == "VALID"){
                     if( snippet.snippet().kind().name()=="STATEMENT"){
                         if(list.size()==1) {
-                            Pattern pat = Pattern.compile("^\\s*(System.out.println)\\s*\\(\\s*(\"Hello World\")\\s*\\)\\s*\\;?$");
+                            Pattern pat = Pattern.compile("^\\s*(System.out.println)\\s*\\(\\s*(\"Hello World\")\\s*\\)\\s*\\;?\\s*$");
                             Matcher mat = pat.matcher(snippet.snippet().source());
                             if (mat.matches()) {
                                 obj_resp.setSource(snippet.snippet().source());
@@ -77,8 +77,9 @@ public class AnalisisStatic {
             for (VarSnippet vs:listV){
                 if ("VAR".equals(vs.kind().name()) && "String".equals(vs.typeName())){
                     for (SnippetEvent snippet : list) {
-                        Pattern pat = Pattern.compile("^\\s*(System.out.println)\\s*\\(\\s*"+vs.name()+"\\s*\\)\\s*\\;?$");
+                        Pattern pat = Pattern.compile("^\\s*(System.out.println)\\s*\\(\\s*"+vs.name()+"\\s*\\)\\s*\\;?\\s*$");
                         Matcher mat = pat.matcher(snippet.snippet().source());
+                        System.out.println(mat.find());
                         if(mat.matches()){
                             obj_resp.setSource(command);
                             obj_resp.setStatus("VALID");
@@ -103,7 +104,7 @@ public class AnalisisStatic {
             for (VarSnippet vs:listV){
                 if ("VAR".equals(vs.kind().name()) && "int".equals(vs.typeName())){
                     for (SnippetEvent snippet : list) {
-                        Pattern pat = Pattern.compile("^\\s*(System.out.println)\\s*\\(\\s*"+vs.name()+"\\s*\\)\\s*\\;?$");
+                        Pattern pat = Pattern.compile("^\\s*(System.out.println)\\s*\\(\\s*"+vs.name()+"\\s*\\)\\s*\\;\\s*?$");
                         Matcher mat = pat.matcher(snippet.snippet().source());
                         if(mat.matches()){
                             obj_resp.setSource(command);
@@ -150,7 +151,7 @@ public class AnalisisStatic {
                     boolean valid1 =false;
                     boolean valid2 =false;
                     for (SnippetEvent snippet : list) {
-                        Pattern pat = Pattern.compile("^\\s*(System.out.println)\\s*\\(\\s*[xy]\\s*\\+\\s*[yx]\\s*\\)\\s*\\;?$");
+                        Pattern pat = Pattern.compile("^\\s*(System.out.println)\\s*\\(\\s*[xy]\\s*\\+\\s*[yx]\\s*\\)\\s*\\;?\\s*$");
                         Matcher mat = pat.matcher(snippet.snippet().source());
                         if(mat.matches() && snippet.snippet().source().contains("x") && snippet.snippet().source().contains("y")){
                             System.out.println(snippet.snippet().source());
@@ -217,7 +218,7 @@ public class AnalisisStatic {
                 valid=false;
                 for (SnippetEvent snippet : list) {
 //                    Patron para la impresion
-                    Pattern pat = Pattern.compile("^\\s*(System.out.println)\\s*\\(\\s*z\\s*\\)\\s*\\;?$");
+                    Pattern pat = Pattern.compile("^\\s*(System.out.println)\\s*\\(\\s*z\\s*\\)\\s*\\;?\\s*$");
                     Matcher mat = pat.matcher(snippet.snippet().source());
                     if (mat.matches()) {
                         valid=true;
