@@ -5,6 +5,7 @@ import jdk.jshell.SnippetEvent;
 
 
 import java.util.List;
+import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -24,24 +25,38 @@ public class AnalisisStatic {
         switch (idcode){
             case 1:
 //                caso 1
-                return AnalisisCode1(list);
+                return AnalysisCase1(list);
             case 2:
 //                caso 3
-                return AnalisisCode2(list,listV,command);
+                return AnalysisCase2(list,listV,command);
             case 3:
 //                caso 4:
-                return AnalisisCode4(list,listV,command);
+                return AnalysisCase4(list,listV,command);
             case 4:
 //                caso 5:
-                return AnalisisCode5(list,listV,command);
+                return AnalysisCase5(list,listV,command);
             case 5:
 //                caso 6:
-                return AnalisisCode6(list,listV,command);
+                return AnalysisCase6(list,listV,command);
+            case 7:
+//                caso 8:
+                return AnalysisCase8(list,listV,command);
+            case 8:
+//                caso 9:
+                return AnalysisCase9(list,listV,command);
+            case 9:
+//                caso 10:
+                return AnalysisCase10(list,listV,command);
+//           id con su caso iguales
+            case 12:
+//                caso 12:
+                return AnalysisCase12(list,listV,command);
             default:
-                throw new IllegalStateException("Analisis de Codigo no existente: " + idcode);
+                Response obj_resp=new Response();
+                return Reject2(obj_resp);
         }
     }
-    public Response AnalisisCode1(List<SnippetEvent> list){
+    public Response AnalysisCase1(List<SnippetEvent> list){
         Response obj_resp = new Response();
         for (SnippetEvent snippet:list) {
                 if (snippet.status().name() == "VALID"){
@@ -71,7 +86,7 @@ public class AnalisisStatic {
         }
         return obj_resp;
     }
-    public Response AnalisisCode2(List<SnippetEvent> list,List<VarSnippet> listV,String command){
+    public Response AnalysisCase2(List<SnippetEvent> list,List<VarSnippet> listV,String command){
         Response obj_resp = new Response();
         if(listV.size()==1){
             for (VarSnippet vs:listV){
@@ -98,13 +113,14 @@ public class AnalisisStatic {
         }
         return Reject2(obj_resp);
     }
-    public Response AnalisisCode4(List<SnippetEvent> list,List<VarSnippet> listV,String command){
+    public Response AnalysisCase4(List<SnippetEvent> list,List<VarSnippet> listV,String command){
         Response obj_resp = new Response();
         if(listV.size()==1){
             for (VarSnippet vs:listV){
+                System.out.println(vs.typeName());
                 if ("VAR".equals(vs.kind().name()) && "int".equals(vs.typeName())){
                     for (SnippetEvent snippet : list) {
-                        Pattern pat = Pattern.compile("^\\s*(System.out.println)\\s*\\(\\s*"+vs.name()+"\\s*\\)\\s*\\;\\s*?$");
+                        Pattern pat = Pattern.compile("^\\s*(System.out.println)\\s*\\(\\s*"+vs.name()+"\\s*\\)\\s*\\;?\\s*$");
                         Matcher mat = pat.matcher(snippet.snippet().source());
                         if(mat.matches()){
                             obj_resp.setSource(command);
@@ -126,19 +142,17 @@ public class AnalisisStatic {
         return Reject2(obj_resp);
 
     }
-    public Response AnalisisCode5(List<SnippetEvent> list,List<VarSnippet> listV,String command){
+    public Response AnalysisCase5(List<SnippetEvent> list,List<VarSnippet> listV,String command){
         Response obj_resp = new Response();
         boolean valid=false;
         for (SnippetEvent snippet : list) {
             if(snippet.status().name().equals("VALID")){
-                valid=true;
+                continue;
             }else{
                 return Reject2(obj_resp);
             }
         }
-        if(valid){
             if(listV.size()==2){
-//                int cont=0;
                 for (VarSnippet vs:listV){
                     if ("VAR".equals(vs.kind().name()) && "int".equals(vs.typeName())){
                         continue;
@@ -171,12 +185,7 @@ public class AnalisisStatic {
                         Reject2(obj_resp);
                     }
                     if(valid1 && valid2){
-                        obj_resp.setSource(command);
-                        obj_resp.setStatus("VALID");
-                        obj_resp.setValue(null);
-                        obj_resp.setTypeSnippet(null);
-                        obj_resp.setSubtypeSnippet(null);
-                        return obj_resp;
+                        return Valid(obj_resp);
                     }else{
                         Reject2(obj_resp);
                     }
@@ -184,11 +193,11 @@ public class AnalisisStatic {
             } else {
                 return Reject2(obj_resp);
             }
-        }
+//        }
         return Reject2(obj_resp);
     }
 //    case 6
-    public Response AnalisisCode6(List<SnippetEvent> list,List<VarSnippet> listV,String command){
+    public Response AnalysisCase6(List<SnippetEvent> list,List<VarSnippet> listV,String command){
         Response obj_resp = new Response();
         boolean valid=false;
         for (SnippetEvent snippet : list) {
@@ -241,6 +250,166 @@ public class AnalisisStatic {
         }
         return Reject2(obj_resp);
     }
+//    case 8
+//    System.out.println(10 * 5);
+    public Response AnalysisCase8(List<SnippetEvent> list,List<VarSnippet> listV,String command){
+        Response obj_resp = new Response();
+        for (SnippetEvent snippet : list) {
+            if(snippet.status().name().equals("VALID")){
+                continue;
+            }else{
+                return Reject2(obj_resp);
+            }
+        }
+        boolean valid = false;
+        if(list.size()==1){
+            for(SnippetEvent snippet : list){
+                Pattern pat = Pattern.compile("^\\s*(System.out.println)\\s*\\(\\s*10\\s*\\*\\s*5\\s*\\)\\s*\\;?\\s*$");
+                Matcher mat = pat.matcher(snippet.snippet().source());
+                if (mat.matches()) {
+                    valid=true;
+                }
+            }
+            if (valid){
+                obj_resp.setSource(command);
+                obj_resp.setStatus("VALID");
+                obj_resp.setValue(null);
+                obj_resp.setTypeSnippet(null);
+                obj_resp.setSubtypeSnippet(null);
+                return obj_resp;
+            }else{
+                return Reject2(obj_resp);
+            }
+        }else{
+            return Reject2(obj_resp);
+        }
+    }
+//    case 9
+    public Response AnalysisCase9(List<SnippetEvent> list,List<VarSnippet> listV,String command){
+        Response obj_resp = new Response();
+        for (SnippetEvent snippet : list) {
+            if(snippet.status().name().equals("VALID")){
+                continue;
+            }else{
+                return Reject2(obj_resp);
+            }
+        }
+        boolean valid = false;
+        if(list.size()==1){
+            for(SnippetEvent snippet : list){
+                Pattern pat = Pattern.compile("^\\s*(System.out.println)\\s*\\(\\s*10\\s*\\/\\s*5\\s*\\)\\s*\\;?\\s*$");
+                Matcher mat = pat.matcher(snippet.snippet().source());
+                if (mat.matches()) {
+                    valid=true;
+                }
+            }
+            if (valid){
+                obj_resp.setSource(command);
+                obj_resp.setStatus("VALID");
+                obj_resp.setValue(null);
+                obj_resp.setTypeSnippet(null);
+                obj_resp.setSubtypeSnippet(null);
+                return obj_resp;
+            }else{
+                return Reject2(obj_resp);
+            }
+        }else{
+            return Reject2(obj_resp);
+        }
+    }
+    public Response AnalysisCase10(List<SnippetEvent> list,List<VarSnippet> listV,String command){
+        Response obj_resp = new Response();
+        for (SnippetEvent snippet : list) {
+            if(snippet.status().name().equals("VALID")){
+                continue;
+            }else{
+                return Reject2(obj_resp);
+            }
+        }
+        boolean valid=false;
+        String i;
+        if(listV.size()==2){
+            for(VarSnippet varSnippet:listV){
+                if("x".equals(varSnippet.name())){
+                    valid=true;
+                }
+            }
+            if(valid){
+                for(SnippetEvent snippet:list){
+                    if(snippet.value().equals("10")){
+                        continue;
+                    } else if (snippet.value().equals("11") && snippet.snippet().source().contains("++")) {
+                        continue;
+                    }else {
+                        return Reject2(obj_resp);
+                    }
+                }
+                return Valid(obj_resp);
+            }
+        }else{
+            return Reject2(obj_resp);
+        }
+        return Reject2(obj_resp);
+//        boolean valid = false;
+//        if(list.size()==2){
+//            for(SnippetEvent snippet : list){
+//                Pattern pat = Pattern.compile("^\\s*(System.out.println)\\s*\\(\\s*10\\s*\\/\\s*5\\s*\\)\\s*\\;?\\s*$");
+//                Matcher mat = pat.matcher(snippet.snippet().source());
+//                if (mat.matches()) {
+//                    valid=true;
+//                }
+//            }
+//            if (valid){
+//                obj_resp.setSource(command);
+//                obj_resp.setStatus("VALID");
+//                obj_resp.setValue(null);
+//                obj_resp.setTypeSnippet(null);
+//                obj_resp.setSubtypeSnippet(null);
+//                return obj_resp;
+//            }else{
+//                return Reject2(obj_resp);
+//            }
+//        }else{
+//            return Reject2(obj_resp);
+//        }
+    }
+//    case 12
+    public Response AnalysisCase12(List<SnippetEvent> list,List<VarSnippet> listV,String command){
+        Response obj_resp=new Response();
+        for (SnippetEvent snippet : list) {
+            if(snippet.status().name().equals("VALID")){
+                continue;
+            }else{
+                return Reject2(obj_resp);
+            }
+        }
+        String x=null;
+        if(listV.size()==1){
+            for (VarSnippet varSnippet:listV){
+                if(varSnippet.typeName().equals("String")){
+                    x=varSnippet.name();
+                }else {Reject2(obj_resp);}
+
+            }
+            if(x!=null){
+                boolean valid=false;
+                for (SnippetEvent snippetEvent:list){
+                    if(snippetEvent.snippet().source().contains(x+".toUpperCase()")){
+                        valid=true;
+                    }
+                }
+                if (valid){
+                    return Valid(obj_resp);
+                }
+                return Reject2(obj_resp);
+            }
+
+        }else {
+            return Reject2(obj_resp);
+        }
+        return Reject2(obj_resp);
+    }
+
     public Response Reject(Response obj_resp,SnippetEvent snippet){
         obj_resp.setSource(snippet.snippet().source());
         obj_resp.setStatus("REJECTED");
@@ -252,6 +421,14 @@ public class AnalisisStatic {
     public Response Reject2(Response obj_resp){
         obj_resp.setSource(null);
         obj_resp.setStatus("REJECTED");
+        obj_resp.setValue(null);
+        obj_resp.setTypeSnippet(null);
+        obj_resp.setSubtypeSnippet(null);
+        return obj_resp;
+    }
+    public Response Valid(Response obj_resp){
+        obj_resp.setSource(null);
+        obj_resp.setStatus("VALID");
         obj_resp.setValue(null);
         obj_resp.setTypeSnippet(null);
         obj_resp.setSubtypeSnippet(null);

@@ -16,10 +16,8 @@ import java.util.stream.Collectors;
 @Service
 public class codeAnalisis implements IcodeAnalisis {
     private JShell shell;
-    private SnippetResolver snippetResolver;
     private AnalisisStatic as;
     public codeAnalisis() {
-        snippetResolver = new SnippetResolver();
         shell = JShell.create();
         this.as=AnalisisStatic.getinstancia();
     }
@@ -39,10 +37,6 @@ public class codeAnalisis implements IcodeAnalisis {
 //        reseteo el entorno
         limpiarEntorno();
         return as.CodeAnalisis(listEvent,listVar,idquestion,command);
-//        Stream <Response> obj = shell.eval(command).stream()
-//                .map(snippetResolver::resolve);
-//                .reduce((prev, current) -> prev + "\n" + current)
-//                .orElse("Invalid command");
     }
     public List<SnippetEvent> getListEvent(List<String> snippets){
 
