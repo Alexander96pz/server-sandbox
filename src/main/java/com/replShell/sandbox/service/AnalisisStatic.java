@@ -4,8 +4,9 @@ import com.replShell.sandbox.model.Response;
 import jdk.jshell.SnippetEvent;
 
 
+import java.io.PrintStream;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -24,33 +25,75 @@ public class AnalisisStatic {
     public Response CodeAnalisis(List<SnippetEvent> list, List<VarSnippet>listV, int idcode,String command){
         switch (idcode){
             case 1:
-//                caso 1
                 return AnalysisCase1(list);
-            case 2:
-//                caso 3
-                return AnalysisCase2(list,listV,command);
             case 3:
-//                caso 4:
-                return AnalysisCase4(list,listV,command);
+                return AnalysisCase3(list,listV,command);
             case 4:
-//                caso 5:
-                return AnalysisCase5(list,listV,command);
+                return AnalysisCase4(list,listV,command);
             case 5:
-//                caso 6:
+                return AnalysisCase5(list,listV,command);
+            case 6:
                 return AnalysisCase6(list,listV,command);
             case 7:
-//                caso 8:
-                return AnalysisCase8(list,listV,command);
+                return AnalysisCase7(list,listV,command);
             case 8:
-//                caso 9:
-                return AnalysisCase9(list,listV,command);
+                return AnalysisCase8(list,listV,command);
             case 9:
-//                caso 10:
+                return AnalysisCase9(list,listV,command);
+            case 10:
                 return AnalysisCase10(list,listV,command);
-//           id con su caso iguales
+            case 11:
+                return AnalysisCase11(list,listV,command);
             case 12:
-//                caso 12:
                 return AnalysisCase12(list,listV,command);
+            case 13:
+                return AnalysisCase13(list,listV,command);
+            case 14:
+                return AnalysisCase14(list,listV,command);
+            case 15:
+                return AnalysisCase15(list,listV,command);
+            case 16:
+                return AnalysisCase16(list,listV,command);
+            case 17:
+                return AnalysisCase17(list,listV,command);
+            case 18:
+                return AnalysisCase18(list,listV,command);
+            case 19:
+                return AnalysisCase19(list,listV,command);
+            case 20:
+                return AnalysisCase20(list,listV,command);
+            case 21:
+                return AnalysisCase21(list,listV,command);
+            case 22:
+                return AnalysisCase22(list,listV,command);
+            case 23:
+                return AnalysisCase23(list,listV,command);
+            case 24:
+                return AnalysisCase24(list,listV,command);
+            case 25:
+                return AnalysisCase25(list,listV,command);
+            case 26:
+                return AnalysisCase26(list,listV,command);
+            case 27:
+                return AnalysisCase27(list,listV,command);
+            case 28:
+                return AnalysisCase28(list,listV,command);
+            case 29:
+                return AnalysisCase29(list,listV,command);
+            case 30:
+                return AnalysisCase30(list,listV,command);
+            case 31:
+                return AnalysisCase31(list,listV,command);
+            case 32:
+                return AnalysisCase32(list,listV,command);
+            case 33:
+                return AnalysisCase33(list,listV,command);
+            case 34:
+                return AnalysisCase34(list,listV,command);
+            case 35:
+                return AnalysisCase35(list,listV,command);
+            case 44:
+                return AnalysisCase44(list,listV,command);
             default:
                 Response obj_resp=new Response();
                 return Reject2(obj_resp);
@@ -86,7 +129,7 @@ public class AnalisisStatic {
         }
         return obj_resp;
     }
-    public Response AnalysisCase2(List<SnippetEvent> list,List<VarSnippet> listV,String command){
+    public Response AnalysisCase3(List<SnippetEvent> list,List<VarSnippet> listV,String command){
         Response obj_resp = new Response();
         if(listV.size()==1){
             for (VarSnippet vs:listV){
@@ -94,7 +137,6 @@ public class AnalisisStatic {
                     for (SnippetEvent snippet : list) {
                         Pattern pat = Pattern.compile("^\\s*(System.out.println)\\s*\\(\\s*"+vs.name()+"\\s*\\)\\s*\\;?\\s*$");
                         Matcher mat = pat.matcher(snippet.snippet().source());
-                        System.out.println(mat.find());
                         if(mat.matches()){
                             obj_resp.setSource(command);
                             obj_resp.setStatus("VALID");
@@ -250,8 +292,40 @@ public class AnalisisStatic {
         }
         return Reject2(obj_resp);
     }
+    public Response AnalysisCase7(List<SnippetEvent> list,List<VarSnippet> listV,String command){
+        Response obj_resp = new Response();
+        for (SnippetEvent snippet : list) {
+            if(snippet.status().name().equals("VALID")){
+                continue;
+            }else{
+                return Reject2(obj_resp);
+            }
+        }
+        if(list.size() == 3){
+            if (listV.size() == 3) {
+                String typevariable=listV.get(0).typeName();
+                for (VarSnippet varSnippet:listV){
+                    if(varSnippet.typeName().equals(typevariable)){
+                        continue;
+                    }else {
+                        return Reject2(obj_resp);
+                    }
+                }
+                for (SnippetEvent snippetEvent:list){
+                    if(snippetEvent.snippet().source().contains(",")){
+                        continue;
+                    }else {
+                        return Reject2(obj_resp);
+                    }
+                }
+                return Valid(obj_resp);
+            }else{
+                return Reject2(obj_resp);
+            }
+        }
+        return Reject2(obj_resp);
+    }
 //    case 8
-//    System.out.println(10 * 5);
     public Response AnalysisCase8(List<SnippetEvent> list,List<VarSnippet> listV,String command){
         Response obj_resp = new Response();
         for (SnippetEvent snippet : list) {
@@ -297,19 +371,14 @@ public class AnalisisStatic {
         boolean valid = false;
         if(list.size()==1){
             for(SnippetEvent snippet : list){
-                Pattern pat = Pattern.compile("^\\s*(System.out.println)\\s*\\(\\s*10\\s*\\/\\s*5\\s*\\)\\s*\\;?\\s*$");
+                Pattern pat = Pattern.compile("^\\s*(System.out.println)\\s*\\(\\s*\\d+\\s*\\/\\s*\\d+\\s*\\)\\s*\\;?\\s*$");
                 Matcher mat = pat.matcher(snippet.snippet().source());
                 if (mat.matches()) {
                     valid=true;
                 }
             }
             if (valid){
-                obj_resp.setSource(command);
-                obj_resp.setStatus("VALID");
-                obj_resp.setValue(null);
-                obj_resp.setTypeSnippet(null);
-                obj_resp.setSubtypeSnippet(null);
-                return obj_resp;
+                return Valid(obj_resp);
             }else{
                 return Reject2(obj_resp);
             }
@@ -350,28 +419,26 @@ public class AnalisisStatic {
             return Reject2(obj_resp);
         }
         return Reject2(obj_resp);
-//        boolean valid = false;
-//        if(list.size()==2){
-//            for(SnippetEvent snippet : list){
-//                Pattern pat = Pattern.compile("^\\s*(System.out.println)\\s*\\(\\s*10\\s*\\/\\s*5\\s*\\)\\s*\\;?\\s*$");
-//                Matcher mat = pat.matcher(snippet.snippet().source());
-//                if (mat.matches()) {
-//                    valid=true;
-//                }
-//            }
-//            if (valid){
-//                obj_resp.setSource(command);
-//                obj_resp.setStatus("VALID");
-//                obj_resp.setValue(null);
-//                obj_resp.setTypeSnippet(null);
-//                obj_resp.setSubtypeSnippet(null);
-//                return obj_resp;
-//            }else{
-//                return Reject2(obj_resp);
-//            }
-//        }else{
-//            return Reject2(obj_resp);
-//        }
+    }
+    public Response AnalysisCase11(List<SnippetEvent> list,List<VarSnippet> listV,String command){
+        Response obj_resp = new Response();
+        for (SnippetEvent snippet : list) {
+            if(snippet.status().name().equals("VALID")){
+                continue;
+            }else{
+                return Reject2(obj_resp);
+            }
+        }
+        for(SnippetEvent snippet:list){
+            if(snippet.value().equals("10")){
+                continue;
+            } else if (snippet.snippet().source().contains("+=") && snippet.snippet().source().contains("x")) {
+                return Valid(obj_resp);
+            } else {
+                return Reject2(obj_resp);
+            }
+        }
+        return Reject2(obj_resp);
     }
 //    case 12
     public Response AnalysisCase12(List<SnippetEvent> list,List<VarSnippet> listV,String command){
@@ -406,6 +473,561 @@ public class AnalisisStatic {
 
         }else {
             return Reject2(obj_resp);
+        }
+        return Reject2(obj_resp);
+    }
+    //case 13
+    public Response AnalysisCase13(List<SnippetEvent> list,List<VarSnippet> listV,String command){
+        Response obj_resp=new Response();
+        for (SnippetEvent snippet : list) {
+            if(snippet.status().name().equals("VALID")){
+                continue;
+            }else{
+                return Reject2(obj_resp);
+            }
+        }
+        if(listV.size()==2){
+            for (SnippetEvent snippetEvent:list){
+                Pattern pat = Pattern.compile("^\\s*(System.out.println)\\s*\\(\\s*(firstName)\\s*\\+\\s*(lastName)\\s*\\)\\s*\\;?\\s*$");
+                Matcher mat = pat.matcher(snippetEvent.snippet().source());
+                if(mat.matches()){
+                    return Valid(obj_resp);
+                }
+            }
+        }else{
+            return Reject2(obj_resp);
+        }
+        return Reject2(obj_resp);
+    }
+    public Response AnalysisCase14(List<SnippetEvent> list,List<VarSnippet> listV,String command){
+        Response obj_resp=new Response();
+        for (SnippetEvent snippet : list) {
+            if(snippet.status().name().equals("VALID")){
+                continue;
+            }else{
+                return Reject2(obj_resp);
+            }
+        }
+        if(listV.size()==2){
+            for (SnippetEvent snippetEvent:list){
+                Pattern pat = Pattern.compile("^\\s*(System.out.println)\\s*\\(\\s*(firstName.concat)\\s*\\(\\s*(lastName)\\s*\\)\\s*\\)\\s*;?\\s*$");
+                Matcher mat = pat.matcher(snippetEvent.snippet().source());
+                if(mat.matches()){
+                    return Valid(obj_resp);
+                }
+            }
+        }else{
+            return Reject2(obj_resp);
+        }
+        return Reject2(obj_resp);
+    }
+    public Response AnalysisCase15(List<SnippetEvent> list,List<VarSnippet> listV,String command){
+        Response obj_resp=new Response();
+        for (SnippetEvent snippet : list) {
+            if(snippet.status().name().equals("VALID")){
+                continue;
+            }else{
+                return Reject2(obj_resp);
+            }
+        }
+        SnippetEvent snippetEvent=list.get(1);
+        Pattern pat = Pattern.compile("^\\s*(System.out.println)?\\s*\\(?\\s*(txt.indexOf)\\s*\\(\\s*(\"e\")\\s*\\)\\s*\\)?\\s*;?\\s*$");
+        Matcher mat = pat.matcher(snippetEvent.snippet().source());
+        if(mat.matches()){
+            return Valid(obj_resp);
+        }
+        return Reject2(obj_resp);
+    }
+    public Response AnalysisCase16(List<SnippetEvent> list,List<VarSnippet> listV,String command){
+        Response obj_resp=new Response();
+        for (SnippetEvent snippet : list) {
+            if(snippet.status().name().equals("VALID")){
+                continue;
+            }else{
+                return Reject2(obj_resp);
+            }
+        }
+        if(list.size()==3){
+            SnippetEvent snippetEvent=list.get(2);
+            Pattern pat = Pattern.compile("^\\s*(System.out.println)?\\s*\\(?\\s*(Math.max)\\s*\\(\\s*x\\s*,\\s*y\\s*\\)\\s*\\)?\\s*;?\\s*$");
+            Pattern pat2 = Pattern.compile("^\\s*(System.out.println)?\\s*\\(?\\s*(Math.max)\\s*\\(\\s*y\\s*\\,\\s*x\\s*\\)\\s*\\)?\\s*;?\\s*$");
+            Matcher mat = pat.matcher(snippetEvent.snippet().source());
+            Matcher mat2 = pat2.matcher(snippetEvent.snippet().source());
+            if(mat.matches() || mat2.matches()){
+                return Valid(obj_resp);
+            }
+        }
+        return Reject2(obj_resp);
+    }
+    public Response AnalysisCase17(List<SnippetEvent> list,List<VarSnippet> listV,String command){
+        Response obj_resp=new Response();
+        for (SnippetEvent snippet : list) {
+            if(snippet.status().name().equals("VALID")){
+                continue;
+            }else{
+                return Reject2(obj_resp);
+            }
+        }
+        if(list.size()==2){
+            SnippetEvent snippetEvent=list.get(1);
+            Pattern pat = Pattern.compile("^\\s*(System.out.println)?\\s*\\(?\\s*(Math.sqrt)\\s*\\(\\s*x\\s*\\)\\s*\\)?\\s*;?\\s*$");
+            Matcher mat = pat.matcher(snippetEvent.snippet().source());
+            if(mat.matches()){
+                return Valid(obj_resp);
+            }
+        }
+        return Reject2(obj_resp);
+    }
+    public Response AnalysisCase18(List<SnippetEvent> list,List<VarSnippet> listV,String command){
+        Response obj_resp=new Response();
+        for (SnippetEvent snippet : list) {
+            if(snippet.status().name().equals("VALID")){
+                continue;
+            }else{
+                return Reject2(obj_resp);
+            }
+        }
+        if(list.size()==1){
+            SnippetEvent snippetEvent=list.get(0);
+            Pattern pat = Pattern.compile("^\\s*(System.out.println)?\\s*\\(?\\s*(Math.random)\\s*\\(\\s*\\)\\s*\\)?\\s*;?\\s*$");
+            Matcher mat = pat.matcher(snippetEvent.snippet().source());
+            if(mat.matches()){
+                return Valid(obj_resp);
+            }
+        }
+        return Reject2(obj_resp);
+    }
+    public Response AnalysisCase19(List<SnippetEvent> list,List<VarSnippet> listV,String command){
+        Response obj_resp=new Response();
+        for (SnippetEvent snippet : list) {
+            if(snippet.status().name().equals("VALID")){
+                continue;
+            }else{
+                return Reject2(obj_resp);
+            }
+        }
+        if(listV.size()==2){
+            for (VarSnippet varSnippet:listV){
+                if(varSnippet.typeName().equals("boolean")){
+                    continue;
+                }else {
+                    return Reject2(obj_resp);
+                }
+            }
+            int cont=0;
+            for (SnippetEvent snippetEvent:list){
+                if(snippetEvent.value().equals("true")){
+                    cont+=1;
+                } else if (snippetEvent.value().equals("false")){
+                    cont+=1;
+                }
+            }
+            if (cont==2){return Valid(obj_resp);}
+        }
+        return Reject2(obj_resp);
+    }
+    public Response AnalysisCase20(List<SnippetEvent> list,List<VarSnippet> listV,String command){
+        Response obj_resp=new Response();
+        for (SnippetEvent snippet : list) {
+            if(snippet.status().name().equals("VALID")){
+                continue;
+            }else{
+                return Reject2(obj_resp);
+            }
+        }
+        if(list.size()==3){
+            SnippetEvent snippetEvent=list.get(2);
+            Pattern pat = Pattern.compile("^\\s*(System.out.println)?\\s*\\(?\\s*x\\s*>\\s*y\\s*\\)?\\s*;?\\s*$");
+            Matcher mat = pat.matcher(snippetEvent.snippet().source());
+            if(mat.matches()){
+                return Valid(obj_resp);
+            }
+        }
+        return Reject2(obj_resp);
+    }
+    public Response AnalysisCase21(List<SnippetEvent> list,List<VarSnippet> listV,String command){
+        Response obj_resp=new Response();
+        for (SnippetEvent snippet : list) {
+            if(snippet.status().name().equals("VALID")){
+                continue;
+            }else{
+                return Reject2(obj_resp);
+            }
+        }
+        if(listV.size()==2){
+            SnippetEvent snippetEvent=list.get(2);
+            Pattern pat = Pattern.compile("\\s*(System.out.println)\\s*\\(\\s*(\"Hello World\")\\s*\\)\\s*;\\s*");
+            Matcher mat = pat.matcher(snippetEvent.snippet().source());
+            Pattern pat2 = Pattern.compile("\\(\\s*x\\s*>\\s*y\\s*\\)");
+            Matcher mat2 = pat2.matcher(snippetEvent.snippet().source());
+            if(mat.find() && mat2.find() && snippetEvent.snippet().source().contains("if")){
+                return Valid(obj_resp);
+            }
+        }
+        return Reject2(obj_resp);
+    }
+    public Response AnalysisCase22(List<SnippetEvent> list,List<VarSnippet> listV,String command){
+        Response obj_resp=new Response();
+        for (SnippetEvent snippet : list) {
+            if(snippet.status().name().equals("VALID")){
+                continue;
+            }else{
+                return Reject2(obj_resp);
+            }
+        }
+        if(listV.size()==2){
+            SnippetEvent snippetEvent=list.get(2);
+            Pattern pat = Pattern.compile("\\s*(System.out.println)\\s*\\(\\s*(\"Hello World\")\\s*\\)\\s*;\\s*");
+            Matcher mat = pat.matcher(snippetEvent.snippet().source());
+            Pattern pat2 = Pattern.compile("\\(\\s*x\\s*==\\s*y\\s*\\)");
+            Matcher mat2 = pat2.matcher(snippetEvent.snippet().source());
+            if(mat.find() && mat2.find() && snippetEvent.snippet().source().contains("if")){
+                return Valid(obj_resp);
+            }
+        }
+        return Reject2(obj_resp);
+    }
+    public Response AnalysisCase23(List<SnippetEvent> list,List<VarSnippet> listV,String command){
+        Response obj_resp=new Response();
+        for (SnippetEvent snippet : list) {
+            if(snippet.status().name().equals("VALID")){
+                continue;
+            }else{
+                return Reject2(obj_resp);
+            }
+        }
+        if(listV.size()==2){
+            SnippetEvent snippetEvent=list.get(2);
+            Pattern pat = Pattern.compile("\\(\\s*x\\s*==\\s*y\\s*\\)\\s*\\{\\s*(System.out.println)\\s*\\(\\s*(\"Yes\")\\s*\\)\\s*;\\s*");
+            Matcher mat = pat.matcher(snippetEvent.snippet().source());
+            Pattern pat2 = Pattern.compile("(else)\\s*\\{\\s*(System.out.println)\\s*\\(\\s*(\"No\")\\s*\\)\\s*;\\s*");
+            Matcher mat2 = pat2.matcher(snippetEvent.snippet().source());
+            boolean validator1=mat.find();
+            boolean validator2=mat2.find();
+            if(validator1 && validator2 && snippetEvent.snippet().source().contains("if")){
+                return Valid(obj_resp);
+            }
+        }
+        return Reject2(obj_resp);
+    }
+    public Response AnalysisCase24(List<SnippetEvent> list,List<VarSnippet> listV,String command){
+        Response obj_resp=new Response();
+        for (SnippetEvent snippet : list) {
+            if(snippet.status().name().equals("VALID")){
+                continue;
+            }else{
+                return Reject2(obj_resp);
+            }
+        }
+        if(listV.size()==2){
+            SnippetEvent snippetEvent=list.get(2);
+            Pattern pat = Pattern.compile("\\(\\s*x\\s*==\\s*y\\s*\\)\\s*\\{\\s*(System.out.println)\\s*\\(\\s*(\"1\")\\s*\\)\\s*;\\s*");
+            Matcher mat = pat.matcher(snippetEvent.snippet().source());
+            Pattern pat2 = Pattern.compile("(else)\\s*(if)\\s*\\(\\s*x\\s*>\\s*y\\s*\\)\\s*\\{\\s*(System.out.println)\\s*\\(\\s*(\"2\")\\s*\\)\\s*;\\s*");
+            Matcher mat2 = pat2.matcher(snippetEvent.snippet().source());
+            Pattern pat3 = Pattern.compile("(else)\\s*\\{\\s*(System.out.println)\\s*\\(\\s*(\"3\")\\s*\\)\\s*;\\s*");
+            Matcher mat3 = pat3.matcher(snippetEvent.snippet().source());
+            boolean validator1=mat.find();
+            boolean validator2=mat2.find();
+            boolean validator3=mat3.find();
+            if(validator1 && validator2 && validator3 && snippetEvent.snippet().source().contains("if")){
+                return Valid(obj_resp);
+            }
+        }
+        return Reject2(obj_resp);
+    }
+    public Response AnalysisCase25(List<SnippetEvent> list,List<VarSnippet> listV,String command){
+        Response obj_resp=new Response();
+        for (SnippetEvent snippet : list) {
+            if(snippet.status().name().equals("VALID")){
+                continue;
+            }else{
+                return Reject2(obj_resp);
+            }
+        }
+        if(listV.size()>0){
+            if(list.size()<4){
+                for (SnippetEvent snippetEvent:list){
+                    Pattern pat = Pattern.compile("\\(\\s*time\\s*<\\s*\\d+\\s*\\)\\s*\\?\\s*(\"Good day\")\\s*\\:\\s*(\"Good evening\")\\s*;?");
+                    Matcher mat = pat.matcher(snippetEvent.snippet().source());
+                    boolean validator1=mat.find();
+                    if(validator1){
+                        return Valid(obj_resp);
+                    }
+                }
+            }
+        }
+        return Reject2(obj_resp);
+    }
+    public Response AnalysisCase26(List<SnippetEvent> list,List<VarSnippet> listV,String command){
+        Response obj_resp=new Response();
+        for (SnippetEvent snippet : list) {
+            if(snippet.status().name().equals("VALID")){
+                continue;
+            }else{
+                return Reject2(obj_resp);
+            }
+        }
+        if(listV.size()==1){
+            if(list.size()==2){
+                for (SnippetEvent snippetEvent:list){
+                    Pattern pat = Pattern.compile("\\{\\s*case\\s*1\\s*:\\s*(System.out.println)\\s*\\(\\s*(\"Saturday\")\\s*\\)");
+                    Matcher mat = pat.matcher(snippetEvent.snippet().source());
+                    Pattern pat2 = Pattern.compile("\\s*case\\s*2\\s*:\\s*(System.out.println)\\s*\\(\\s*(\"Sunday\")\\s*\\)");
+                    Matcher mat2 = pat2.matcher(snippetEvent.snippet().source());
+                    boolean validator1=mat.find();
+                    boolean validator2=mat2.find();
+                    if(validator1 && validator2 && snippetEvent.snippet().source().contains("switch")){
+                        return Valid(obj_resp);
+                    }
+                }
+            }
+        }
+        return Reject2(obj_resp);
+    }
+    public Response AnalysisCase27(List<SnippetEvent> list,List<VarSnippet> listV,String command){
+        Response obj_resp=new Response();
+        for (SnippetEvent snippet : list) {
+            if(snippet.status().name().equals("VALID")){
+                continue;
+            }else{
+                return Reject2(obj_resp);
+            }
+        }
+        if(listV.size()==1){
+            if(list.size()==2){
+                Pattern pat = Pattern.compile("\\{\\s*case\\s*1\\s*:\\s*(System.out.println)\\s*\\(\\s*(\"Saturday\")\\s*\\)");
+                Pattern pat2 = Pattern.compile("\\s*case\\s*2\\s*:\\s*(System.out.println)\\s*\\(\\s*(\"Sunday\")\\s*\\)");
+                Pattern pat3 = Pattern.compile("\\s*default\\s*:\\s*(System.out.println)\\s*\\(\\s*(\"Weekend\")\\s*\\)");
+                for (SnippetEvent snippetEvent:list){
+                    Matcher mat = pat.matcher(snippetEvent.snippet().source());
+                    Matcher mat2 = pat2.matcher(snippetEvent.snippet().source());
+                    Matcher mat3 = pat3.matcher(snippetEvent.snippet().source());
+                    boolean validator1=mat.find();
+                    boolean validator2=mat2.find();
+                    boolean validator3=mat3.find();
+                    if(validator1 && validator2 && validator3 && snippetEvent.snippet().source().contains("switch")){
+                        return Valid(obj_resp);
+                    }
+                }
+            }
+        }
+        return Reject2(obj_resp);
+    }
+    public Response AnalysisCase28(List<SnippetEvent> list,List<VarSnippet> listV,String command){
+        Response obj_resp=new Response();
+        for (SnippetEvent snippet : list) {
+            if(snippet.status().name().equals("VALID")){
+                continue;
+            }else{
+                return Reject2(obj_resp);
+            }
+        }
+        if(listV.size()==1){
+            if(list.size()==2){
+                SnippetEvent snippetEvent=list.get(1);
+                Pattern pat = Pattern.compile("(while)\\s*\\(\\s*i\\s*<\\s*6\\s*\\)\\s*\\{\\s*(System.out.println)\\s*\\(\\s*(i)\\s*\\)\\s*;\\s*(i)");
+                Matcher mat = pat.matcher(snippetEvent.snippet().source());
+                Pattern pat1 = Pattern.compile("(i++)");
+                Matcher mat1 = pat1.matcher(snippetEvent.snippet().source());
+                Pattern pat2 = Pattern.compile("(i+=1)");
+                Matcher mat2 = pat2.matcher(snippetEvent.snippet().source());
+                Pattern pat3 = Pattern.compile("(i=i+1)");
+                Matcher mat3 = pat3.matcher(snippetEvent.snippet().source());
+                if(mat.find() && mat1.find() || mat.find() && mat2.find()||mat.find() && mat3.find()){
+                    return Valid(obj_resp);
+                }
+            }
+        }
+        return Reject2(obj_resp);
+    }
+    public Response AnalysisCase29(List<SnippetEvent> list,List<VarSnippet> listV,String command){
+        Response obj_resp=new Response();
+        for (SnippetEvent snippet : list) {
+            if(snippet.status().name().equals("VALID")){
+                continue;
+            }else{
+                return Reject2(obj_resp);
+            }
+        }
+        if(listV.size()==1){
+            if(list.size()==2){
+                SnippetEvent snippetEvent=list.get(1);
+                Pattern pat = Pattern.compile("(do)\\s*\\{\\s*(System.out.println)\\s*\\(\\s*(i)\\s*\\)\\s*;\\s*(i)");
+                Matcher mat = pat.matcher(snippetEvent.snippet().source());
+                Pattern pat1 = Pattern.compile("(i++)");
+                Matcher mat1 = pat1.matcher(snippetEvent.snippet().source());
+                Pattern pat2 = Pattern.compile("(i+=1)");
+                Matcher mat2 = pat2.matcher(snippetEvent.snippet().source());
+                Pattern pat3 = Pattern.compile("(i=i+1)");
+                Matcher mat3 = pat3.matcher(snippetEvent.snippet().source());
+                Pattern pat4 = Pattern.compile("(while)\\s*\\(\\s*i\\s*<\\s*6\\s*\\)");
+                Matcher mat4 = pat4.matcher(snippetEvent.snippet().source());
+                boolean m=mat4.find();
+//                if(mat.find() && mat4.find() && mat1.find() || mat.find() && mat4.find() && mat2.find()||mat.find() && mat4.find() && mat3.find()){
+                if((mat.find() && mat1.find() && m) || (mat.find() && mat2.find() && m)|| (mat.find() &&  mat3.find() && m)){
+                    return Valid(obj_resp);
+                }
+            }
+        }
+        return Reject2(obj_resp);
+    }
+    public Response AnalysisCase30(List<SnippetEvent> list,List<VarSnippet> listV,String command){
+        Response obj_resp=new Response();
+//        try {
+            for (SnippetEvent snippet : list) {
+                if(snippet.status().name().equals("VALID")){
+                    continue;
+                }else{
+                    return Reject2(obj_resp);
+                }
+            }
+            if(list.size()==1){
+                SnippetEvent snippetEvent=list.get(0);
+                Pattern pat = Pattern.compile("(for)\\s*\\(\\s*(int)\\s*\\w+\\s*=\\s*\\d+\\s*;\\s*\\w+\\s*<\\s*\\d+\\s*;\\s*\\w+\\+\\+\\s*\\)\\s*\\{\\s*(System.out.println)\\s*\\(\\s*(\"Yes\")\\s*\\)\\s*;");
+                Matcher mat = pat.matcher(snippetEvent.snippet().source());
+                if (mat.find()){
+                    String [] numberOnly = snippetEvent.snippet().source().replaceAll("[^0-9]+", ",").split(",");
+                    ArrayList<Integer> num = new ArrayList<>();
+                    for (String s:numberOnly){
+                        if (s.matches("\\s*")){
+                            continue;
+                        }else{
+                            try {
+                                int a=Integer.parseInt(s);
+                                num.add(a);
+                            }catch (Exception e){
+                                return Reject2(obj_resp);
+                            }
+                        }
+                    }
+                    if (num.get(1)-num.get(0)==5){
+                        return Valid(obj_resp);
+                    }
+                }
+            }
+            return Reject2(obj_resp);
+//        }catch (Exception e){
+//            return Reject2(obj_resp);
+//        }
+    }
+    public Response AnalysisCase31(List<SnippetEvent> list,List<VarSnippet> listV,String command){
+        Response obj_resp=new Response();
+        for (SnippetEvent snippet : list) {
+            if(snippet.status().name().equals("VALID")){
+                continue;
+            }else{
+                return Reject2(obj_resp);
+            }
+        }
+        if(list.size()==2){
+            SnippetEvent snippetEvent=list.get(1);
+            Pattern pat = Pattern.compile("(for)\\s*\\(\\s*(String)\\s*\\w+\\s*:\\s*cars\\s*\\)");
+            Pattern pat1 = Pattern.compile("(for)\\s*\\(\\s*(int)\\s*\\w+\\s*=\\s*0\\s*;\\s*\\w+\\s*<\\s*(cars.length)\\s*;\\s*\\w+");
+            Pattern pat2 = Pattern.compile("\\{\\s*(System.out.println)\\s*\\(\\s*\\w+");
+            Matcher mat = pat.matcher(snippetEvent.snippet().source());
+            Matcher mat1 = pat1.matcher(snippetEvent.snippet().source());
+            Matcher mat2 = pat2.matcher(snippetEvent.snippet().source());
+            if (mat.find() && mat2.find() || mat1.find() && mat2.find()){
+                return Valid(obj_resp);
+            }
+        }
+        return Reject2(obj_resp);
+    }
+    public Response AnalysisCase32(List<SnippetEvent> list,List<VarSnippet> listV,String command){
+        Response obj_resp=new Response();
+        for (SnippetEvent snippet : list) {
+            if(snippet.status().name().equals("VALID")){
+                continue;
+            }else{
+                return Reject2(obj_resp);
+            }
+        }
+        if(list.size()==1){
+            SnippetEvent snippetEvent=list.get(0);
+            Pattern pat1 = Pattern.compile("(for)\\s*\\(\\s*(int)\\s*i\\s*=\\s*0\\s*;\\s*i\\s*<\\s*10\\s*;\\s*(i\\+\\+)");
+            Pattern pat2 = Pattern.compile("\\{\\s*(if)\\s*\\(\\s*(i)\\s*==\\s*5\\s*\\)\\s*\\{\\s*break\\s*;\\s*}");
+            Matcher mat1 = pat1.matcher(snippetEvent.snippet().source());
+            Matcher mat2 = pat2.matcher(snippetEvent.snippet().source());
+            if (mat1.find() && mat2.find()){
+                return Valid(obj_resp);
+            }
+        }
+        return Reject2(obj_resp);
+    }
+    public Response AnalysisCase33(List<SnippetEvent> list,List<VarSnippet> listV,String command){
+        Response obj_resp=new Response();
+        for (SnippetEvent snippet : list) {
+            if(snippet.status().name().equals("VALID")){
+                continue;
+            }else{
+                return Reject2(obj_resp);
+            }
+        }
+        if(list.size()==1){
+            SnippetEvent snippetEvent=list.get(0);
+            Pattern pat1 = Pattern.compile("(for)\\s*\\(\\s*(int)\\s*i\\s*=\\s*0\\s*;\\s*i\\s*<\\s*10\\s*;\\s*(i\\+\\+)");
+            Pattern pat2 = Pattern.compile("\\{\\s*(if)\\s*\\(\\s*(i)\\s*==\\s*4\\s*\\)\\s*\\{\\s*continue\\s*;\\s*}");
+            Matcher mat1 = pat1.matcher(snippetEvent.snippet().source());
+            Matcher mat2 = pat2.matcher(snippetEvent.snippet().source());
+            if (mat1.find() && mat2.find()){
+                return Valid(obj_resp);
+            }
+        }
+        return Reject2(obj_resp);
+    }
+    public Response AnalysisCase34(List<SnippetEvent> list,List<VarSnippet> listV,String command){
+        Response obj_resp=new Response();
+        for (SnippetEvent snippet : list) {
+            if(snippet.status().name().equals("VALID")){
+                continue;
+            }else{
+                return Reject2(obj_resp);
+            }
+        }
+        if(listV.size()==1){
+            VarSnippet varSnippet=listV.get(0);
+            if(varSnippet.typeName().equals("String[]") && varSnippet.name().equals("cars")){
+                return Valid(obj_resp);
+            }
+        }
+        return Reject2(obj_resp);
+    }
+    public Response AnalysisCase35(List<SnippetEvent> list,List<VarSnippet> listV,String command){
+        Response obj_resp=new Response();
+        for (SnippetEvent snippet : list) {
+            if(snippet.status().name().equals("VALID")){
+                continue;
+            }else{
+                return Reject2(obj_resp);
+            }
+        }
+        if(listV.size()==1){
+            VarSnippet varSnippet=listV.get(0);
+            SnippetEvent snippetEvent = list.get(1);
+            System.out.println(snippetEvent.snippet().source());
+            Pattern pat = Pattern.compile("(System.out.println)\\s*\\(\\s*cars\\s*\\[\\s*1\\s*]");
+            Matcher mat = pat.matcher(snippetEvent.snippet().source());
+            System.out.println(varSnippet.typeName().equals("String[]") && varSnippet.name().equals("cars"));
+            if((varSnippet.typeName().equals("String[]") && varSnippet.name().equals("cars")) && mat.find()){
+                return Valid(obj_resp);
+            }
+        }
+        return Reject2(obj_resp);
+    }
+    public Response AnalysisCase44(List<SnippetEvent> list,List<VarSnippet> listV,String command){
+        Response obj_resp=new Response();
+        if(list.size()==1){
+            for (SnippetEvent snippet : list) {
+                System.out.println(snippet.toString());
+                System.out.println(snippet.snippet().kind());
+                System.out.println(snippet.snippet().subKind());
+                if(snippet.status().name().equals("VALID")){
+                    continue;
+                }else{
+                    return Reject2(obj_resp);
+                }
+            }
         }
         return Reject2(obj_resp);
     }
