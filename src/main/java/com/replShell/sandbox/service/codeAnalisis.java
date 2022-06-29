@@ -36,7 +36,7 @@ public class codeAnalisis implements IcodeAnalisis {
         List<ImportSnippet> listImports = shell.imports().collect(Collectors.toList());
 //        reseteo el entorno
         limpiarEntorno();
-        return as.CodeAnalisis(listEvent,listVar,idquestion,command);
+        return as.CodeAnalisis(listEvent,listVar,idquestion,command,listMethods);
     }
     public List<SnippetEvent> getListEvent(List<String> snippets){
 
