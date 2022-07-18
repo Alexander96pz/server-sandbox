@@ -231,101 +231,74 @@ public class AnalisisStatic {
                 return Reject2(obj_resp);
             }
         }
-            if(listV.size()==2){
-                for (VarSnippet vs:listV){
-                    if ("VAR".equals(vs.kind().name()) && "int".equals(vs.typeName())){
-                        continue;
-                    }else{
-                        return Reject2(obj_resp);
-                    }
+        if(listV.size()==2){
+            for (VarSnippet vs:listV){
+                if ("VAR".equals(vs.kind().name()) && "int".equals(vs.typeName())){
+                    continue;
+                }else{
+                    return Reject2(obj_resp);
+                }
+            }
+            int suma=0;
+            boolean valid1 =false;
+            boolean valid2 =false;
+            for (SnippetEvent snippet : list) {
+                Pattern pat = Pattern.compile("^\\s*(System.out.println)\\s*\\(\\s*[xy]\\s*\\+\\s*[yx]\\s*\\)\\s*\\;?\\s*$");
+                Matcher mat = pat.matcher(snippet.snippet().source());
+                if(mat.matches() && snippet.snippet().source().contains("x") && snippet.snippet().source().contains("y")){
+                    valid2=true;
+                } else {
+                    suma=suma+Integer.parseInt(snippet.value()) ;
+                }
+            }
+                if(suma != 0){
+                    valid1=true;
+                }else {
+                    Reject2(obj_resp);
+                }
+                if(valid1 && valid2){
+                    return Valid(obj_resp);
+                }else{
+                    Reject2(obj_resp);
                 }
 
-                    int suma=0;
-                    boolean valid1 =false;
-                    boolean valid2 =false;
-                    for (SnippetEvent snippet : list) {
-                        Pattern pat = Pattern.compile("^\\s*(System.out.println)\\s*\\(\\s*[xy]\\s*\\+\\s*[yx]\\s*\\)\\s*\\;?\\s*$");
-                        Matcher mat = pat.matcher(snippet.snippet().source());
-                        if(mat.matches() && snippet.snippet().source().contains("x") && snippet.snippet().source().contains("y")){
-                            System.out.println(snippet.snippet().source());
-                            System.out.println(snippet.snippet().source().contains("y"));
-                            System.out.println(snippet.snippet().source().contains("x"));
-                            System.out.println(mat.matches());
-                            valid2=true;
-                        } else  if(snippet.value()==""){
-                            continue;
-                        } else {
-                            suma=suma+Integer.parseInt(snippet.value()) ;
-                        }
-                    }
-                    if(suma == 15){
-                        valid1=true;
-                    }else {
-                        Reject2(obj_resp);
-                    }
-                    if(valid1 && valid2){
-                        return Valid(obj_resp);
-                    }else{
-                        Reject2(obj_resp);
-                    }
-
-            } else {
-                return Reject2(obj_resp);
-            }
-//        }
+        }
         return Reject2(obj_resp);
     }
 //    case 6
     public Response AnalysisCase6(List<SnippetEvent> list,List<VarSnippet> listV,String command){
         Response obj_resp = new Response();
-        boolean valid=false;
         for (SnippetEvent snippet : list) {
             if(snippet.status().name().equals("VALID")){
-                valid=true;
+                continue;
             }else{
                 return Reject2(obj_resp);
             }
         }
-        if(valid){
-            if(listV.size() == 3){
-                for(VarSnippet var:listV){
-                    if ( var.name().equals("x")){
+        if(listV.size() == 3){
+            for(VarSnippet var:listV){
+                if ( var.name().equals("x")){
+                    continue;
+                }else if(var.name().equals("y")){
+                    continue;
+                } else if (var.name().equals("z")) {
+                    if(var.source().contains("=") && var.source().contains("x") && var.source().contains("+") && var.source().contains("y")){
                         continue;
-                    }else if(var.name().equals("y")){
-                        continue;
-                    } else if (var.name().equals("z")) {
-                        if(var.source().contains("=") && var.source().contains("x") && var.source().contains("+") && var.source().contains("y")){
-                            continue;
-                        }else{
-                            return Reject2(obj_resp);
-                        }
-                    }else {
+                    }else{
                         return Reject2(obj_resp);
                     }
+                }else {
+                    return Reject2(obj_resp);
                 }
-                valid=false;
-                for (SnippetEvent snippet : list) {
-//                    Patron para la impresion
-                    Pattern pat = Pattern.compile("^\\s*(System.out.println)\\s*\\(\\s*z\\s*\\)\\s*\\;?\\s*$");
-                    Matcher mat = pat.matcher(snippet.snippet().source());
-                    if (mat.matches()) {
-                        valid=true;
-                    }
-                }
-                if (valid){
-                    obj_resp.setSource(command);
-                    obj_resp.setStatus("VALID");
-                    obj_resp.setValue(null);
-                    obj_resp.setTypeSnippet(null);
-                    obj_resp.setSubtypeSnippet(null);
-                    return obj_resp;
-                }
-                return Reject2(obj_resp);
-            }else{
-                Reject2(obj_resp);
             }
-        }else {
-            Reject2(obj_resp);
+            for (SnippetEvent snippet : list) {
+//                    Patron para la impresion
+                Pattern pat = Pattern.compile("^\\s*(System.out.println)\\s*\\(\\s*z\\s*\\)\\s*\\;?\\s*$");
+                Matcher mat = pat.matcher(snippet.snippet().source());
+                if (mat.matches()) {
+                    return Valid(obj_resp);
+                }
+            }
         }
         return Reject2(obj_resp);
     }
@@ -508,8 +481,6 @@ public class AnalisisStatic {
                 return Reject2(obj_resp);
             }
 
-        }else {
-            return Reject2(obj_resp);
         }
         return Reject2(obj_resp);
     }

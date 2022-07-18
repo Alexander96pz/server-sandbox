@@ -18,6 +18,7 @@ public class ScriptController {
 
     @PostMapping
     public Response analizarScript(@RequestBody Repl repl) {
+        System.out.println(repl.getCode()+" & "+repl.getId());
         return code.onCommandEntered(repl.getCode(),repl.getId());
     }
 }
