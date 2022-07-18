@@ -955,11 +955,11 @@ public class AnalisisStatic {
             SnippetEvent snippetEvent=list.get(1);
             Pattern pat = Pattern.compile("(for)\\s*\\(\\s*(String)\\s*\\w+\\s*:\\s*cars\\s*\\)");
             Pattern pat1 = Pattern.compile("(for)\\s*\\(\\s*(int)\\s*\\w+\\s*=\\s*0\\s*;\\s*\\w+\\s*<\\s*(cars.length)\\s*;\\s*\\w+");
-            Pattern pat2 = Pattern.compile("\\{\\s*(System.out.println)\\s*\\(\\s*\\w+");
+//            Pattern pat2 = Pattern.compile("\\{\\s*(System.out.println)\\s*\\(\\s*\\w+");
             Matcher mat = pat.matcher(snippetEvent.snippet().source());
             Matcher mat1 = pat1.matcher(snippetEvent.snippet().source());
-            Matcher mat2 = pat2.matcher(snippetEvent.snippet().source());
-            if (mat.find() && mat2.find() || mat1.find() && mat2.find()){
+//            Matcher mat2 = pat2.matcher(snippetEvent.snippet().source());
+            if (mat.find() || mat1.find() ){
                 return Valid(obj_resp);
             }
         }
@@ -977,7 +977,7 @@ public class AnalisisStatic {
         if(list.size()==1){
             SnippetEvent snippetEvent=list.get(0);
             Pattern pat1 = Pattern.compile("(for)\\s*\\(\\s*(int)\\s*i\\s*=\\s*0\\s*;\\s*i\\s*<\\s*10\\s*;\\s*(i\\+\\+)");
-            Pattern pat2 = Pattern.compile("\\{\\s*(if)\\s*\\(\\s*(i)\\s*==\\s*5\\s*\\)\\s*\\{\\s*break\\s*;\\s*}");
+            Pattern pat2 = Pattern.compile("(if)\\s*\\(\\s*(i)\\s*==\\s*5\\s*\\)\\s*\\{\\s*break\\s*;\\s*}");
             Matcher mat1 = pat1.matcher(snippetEvent.snippet().source());
             Matcher mat2 = pat2.matcher(snippetEvent.snippet().source());
             if (mat1.find() && mat2.find()){
@@ -1135,9 +1135,10 @@ public class AnalisisStatic {
         }
         if(list.size()==2){
             SnippetEvent snippetEvent=list.get(1);
-            Pattern pat = Pattern.compile("myMethod\\s*\\(\\s*\\)\\s*;?");
+            Pattern pat = Pattern.compile("myMethod\\s*\\(\\s*\\)\\s*;");
             Matcher mat = pat.matcher(snippetEvent.snippet().source());
-            if(mat.matches()){
+            System.out.println(snippetEvent.snippet().source());
+            if(mat.find()){
                 return Valid(obj_resp);
             }
         }
@@ -1155,10 +1156,10 @@ public class AnalisisStatic {
         if(list.size()==3){
             SnippetEvent snippetEvent=list.get(1);
             SnippetEvent snippetEvent1=list.get(2);
-            Pattern pat = Pattern.compile("myMethod\\s*\\(\\s*\\)\\s*;?");
+            Pattern pat = Pattern.compile("myMethod\\s*\\(\\s*\\)\\s*;");
             Matcher mat = pat.matcher(snippetEvent.snippet().source());
             Matcher mat1 = pat.matcher(snippetEvent1.snippet().source());
-            if(mat.matches() && mat1.matches()){
+            if(mat.find() && mat1.find()){
                 return Valid(obj_resp);
             }
         }
@@ -1351,9 +1352,9 @@ public class AnalisisStatic {
                 return Reject2(obj_resp);
             }
         }
-        if( list.size()==1){
+        if( list.size()==2){
             SnippetEvent snippetEvent=list.get(0);
-            Pattern pat = Pattern.compile("import\\s*java.util.Scanner\\s*;?");
+            Pattern pat = Pattern.compile("import\\s*java.util.Scanner\\s*;");
             Matcher mat = pat.matcher(snippetEvent.snippet().source());
             if(mat.find()){
                 return Valid(obj_resp);
@@ -1389,7 +1390,7 @@ public class AnalisisStatic {
                 return Reject2(obj_resp);
             }
         }
-        if( list.size()==1){
+        if( list.size()==2){
             SnippetEvent snippetEvent=list.get(0);
             Pattern pat = Pattern.compile("try\\s*\\{");
             Pattern pat2 = Pattern.compile("}\\s*catch\\s*\\(\\s*Exception\\s+\\w+\\s*\\)\\s*\\{");
@@ -1410,7 +1411,7 @@ public class AnalisisStatic {
                 return Reject2(obj_resp);
             }
         }
-        if( list.size()==1){
+        if( list.size()==2){
             SnippetEvent snippetEvent=list.get(0);
             Pattern pat = Pattern.compile("try\\s*\\{");
             Pattern pat2 = Pattern.compile("}\\s*catch\\s*\\(\\s*Exception\\s+\\w+\\s*\\)\\s*\\{");
