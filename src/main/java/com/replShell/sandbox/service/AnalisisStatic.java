@@ -1,6 +1,7 @@
 package com.replShell.sandbox.service;
 
 import com.replShell.sandbox.model.Response;
+import jdk.jshell.ImportSnippet;
 import jdk.jshell.MethodSnippet;
 import jdk.jshell.SnippetEvent;
 
@@ -23,7 +24,7 @@ public class AnalisisStatic {
         }
         return instancia;
     }
-    public Response CodeAnalisis(List<SnippetEvent> list, List<VarSnippet>listV, int idcode,String command,List<MethodSnippet>listMethods){
+    public Response CodeAnalisis(List<SnippetEvent> list, List<VarSnippet>listV, int idcode,String command,List<MethodSnippet>listMethods,List<ImportSnippet> listImports){
         switch (idcode){
             case 1:
                 return AnalysisCase1(list);
@@ -124,7 +125,7 @@ public class AnalisisStatic {
             case 50:
                 return AnalysisCase50(list,listV,listMethods);
             case 51:
-                return AnalysisCase51(list,listV,listMethods);
+                return AnalysisCase51(list,listImports);
             case 52:
                 return AnalysisCase52(list,listV,listMethods);
             case 53:
@@ -137,6 +138,7 @@ public class AnalisisStatic {
         }
     }
     public Response AnalysisCase1(List<SnippetEvent> list){
+
         Response obj_resp = new Response();
         for (SnippetEvent snippet:list) {
                 if (snippet.status().name() == "VALID"){
@@ -175,12 +177,7 @@ public class AnalisisStatic {
                         Pattern pat = Pattern.compile("^\\s*(System.out.println)\\s*\\(\\s*"+vs.name()+"\\s*\\)\\s*\\;?\\s*$");
                         Matcher mat = pat.matcher(snippet.snippet().source());
                         if(mat.matches()){
-                            obj_resp.setSource(command);
-                            obj_resp.setStatus("VALID");
-                            obj_resp.setValue(snippet.value());
-                            obj_resp.setTypeSnippet(snippet.snippet().kind().name());
-                            obj_resp.setSubtypeSnippet(snippet.snippet().subKind().name());
-                            return obj_resp;
+                            return Valid(obj_resp);
                         }else if(snippet.status().name().equals("REJECTED")){
                             return Reject(obj_resp,snippet);
                         }
@@ -196,18 +193,12 @@ public class AnalisisStatic {
         Response obj_resp = new Response();
         if(listV.size()==1){
             for (VarSnippet vs:listV){
-                System.out.println(vs.typeName());
                 if ("VAR".equals(vs.kind().name()) && "int".equals(vs.typeName())){
                     for (SnippetEvent snippet : list) {
                         Pattern pat = Pattern.compile("^\\s*(System.out.println)\\s*\\(\\s*"+vs.name()+"\\s*\\)\\s*\\;?\\s*$");
                         Matcher mat = pat.matcher(snippet.snippet().source());
                         if(mat.matches()){
-                            obj_resp.setSource(command);
-                            obj_resp.setStatus("VALID");
-                            obj_resp.setValue(snippet.value());
-                            obj_resp.setTypeSnippet(snippet.snippet().kind().name());
-                            obj_resp.setSubtypeSnippet(snippet.snippet().subKind().name());
-                            return obj_resp;
+                            return Valid(obj_resp);
                         }else if(snippet.status().name().equals("REJECTED")){
                             return Reject(obj_resp,snippet);
                         }
@@ -1319,7 +1310,7 @@ public class AnalisisStatic {
         }
         return Reject2(obj_resp);
     }
-    public Response AnalysisCase51(List<SnippetEvent> list,List<VarSnippet> listV,List<MethodSnippet> listMethods){
+    public Response AnalysisCase51(List<SnippetEvent> list,List<ImportSnippet> listImports){
         Response obj_resp=new Response();
         for (SnippetEvent snippet : list) {
             if(snippet.status().name().equals("VALID")){
