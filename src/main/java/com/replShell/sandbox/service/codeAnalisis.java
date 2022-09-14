@@ -1,47 +1,49 @@
 package com.replShell.sandbox.service;
 
 import com.replShell.sandbox.Interface.IcodeAnalisis;
+import com.replShell.sandbox.model.Repl;
 import com.replShell.sandbox.model.Response;
 import jdk.jshell.*;
 import org.springframework.stereotype.Service;
-import java.lang.Thread;
-
-import javax.swing.*;
-import java.awt.event.ActionEvent;
-import java.sql.Time;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
 public class codeAnalisis implements IcodeAnalisis {
-    private JShell shell;
-    private AnalisisStatic as;
+    public static JShell shell;
+//    private AnalisisStatic as;
+    private AnalisisStaticAutomatico as;
     public codeAnalisis() {
-        shell = JShell.create();
-        this.as=AnalisisStatic.getinstancia();
+    /*crea la instancia de Jshell y
+    executionEngine imprime los mensajes del entorno de Jshell a la consola local
+    mas adelante sera util para obtener los mensajes de impresion de Jshell*/
+        shell = JShell.builder().executionEngine("local").build();
+//        this.as=AnalisisStatic.getinstancia();
+        this.as=AnalisisStaticAutomatico.getinstancia();
     }
 
     @Override
-    public Response onCommandEntered(String command,int idquestion) {
+    public Response onCommandEntered(Repl repl) {
+//        Desfragmento del prerrequisito
+        List<String> snippetsPre = repl.getPrerequisites().isEmpty() ? null:DesfragmentacionSnippet(repl.getPrerequisites());
 //        Desfragmento el codigo
-        List<String> snippets = DesfragmentacionSnippet(command);
+        List<String> snippets = DesfragmentacionSnippet(repl.getCode());
 //        mapeo y evaluo el fragmento de codigo
-        List<SnippetEvent> listEvent= getListEvent(snippets);
-//        Listado de todas las variables creadas en el Entorno
-        List<VarSnippet> listVar =shell.variables().collect(Collectors.toList());
-//        Listado de todas las importaciones creadas en el Entorno
-        List<MethodSnippet> listMethods = shell.methods().collect(Collectors.toList());
-//        Listado de todas las importaciones creadas en el Entorno
-        List<ImportSnippet> listImports = shell.imports().collect(Collectors.toList());
-//        reseteo el entorno
+        List<SnippetEvent> listEvent= getListEvent(snippets,snippetsPre);
+//      Mando hacer Analisis
+        Response as1= as.CodeAnalisis(listEvent,repl);
+//        reseteo el entorno para limpiar datos
         limpiarEntorno();
+        return as1;
 //        return as.CodeAnalisis(listEvent,listVar,idquestion,command,listMethods,listImports);
-        return as.CodeAnalisis(listEvent,listVar,idquestion,command,listMethods,listImports);
     }
-    public List<SnippetEvent> getListEvent(List<String> snippets){
-
-        return snippets.stream().map(shell::eval)
+    public List<SnippetEvent> getListEvent(List<String> snippetsCode,List<String> snippetsPre){
+        //ejeucion de codigo en caso de existir prerrequisitos
+        if(snippetsPre!=null){
+            snippetsPre.stream().map(shell::eval).flatMap(List::stream).collect(Collectors.toList());
+        }
+        return snippetsCode.stream().map(shell::eval)
                     .flatMap(List::stream)
                     .collect(Collectors.toList());
     }
@@ -53,11 +55,6 @@ public class codeAnalisis implements IcodeAnalisis {
         do {
             SourceCodeAnalysis.CompletionInfo info= sca.analyzeCompletion(auxCommand);
             listSnippets.add(info.source());
-//            try {
-//                Thread.sleep(5000);
-//            } catch (Exception e){
-//                System.out.println("error");
-//            }
             //Command restante después del analisis del primer fragmento
             auxCommand = info.remaining();
         }while (auxCommand.length()>0);
@@ -65,6 +62,6 @@ public class codeAnalisis implements IcodeAnalisis {
     }
     public void limpiarEntorno(){
         shell.stop();
-        shell = JShell.create();
+        shell = JShell.builder().executionEngine("local").build();
     }
 }
